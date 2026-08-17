@@ -323,12 +323,12 @@ body{
 <script>
 const PLAN = [
 {
-  d:"17", m:"AĞU", wd:"PZT–SAL", eyebrow:"Adım 0", title:"Hazırlık",
+  d:"17", m:"AĞU", wd:"PZT–SAL", eyebrow:"Ön Kontroller", title:"Gitmeden Önce Kontroller",
   leg:"17–18 AĞUSTOS · KALKIŞA 2 GÜN",
-  memo:"Barselona–Roma bileti hâlâ alınmadı. Fiyat her gün artıyor ve bagaj hakkı seçimi alışveriş planına bağlı.",
+  memo:"Barselona–Roma uçak bileti alındı (22 Ağustos 16:20 Ryanair).",
   groups:[
     { h:"Acil İşler", items:[
-      {t:"Barselona → Roma uçak bileti al (22 Ağustos)", tag:"krit", hint:"Kabin + kayıtlı bagaj hakkı olan tarifeyi seç."},
+      {t:"Barselona → Roma uçak bileti alındı (22 Ağustos)", tag:"krit", hint:"Ryanair 16:20 seferi + 10 kg alt bagaj eklendi."},
       {t:"La Roca Village Shopping Express bileti al", hint:"Online 25 € gidiş-dönüş."}
     ]},
     { h:"Belgeler & Çıktılar", items:[
@@ -437,18 +437,18 @@ const PLAN = [
 },
 {
   d:"22", m:"AĞU", wd:"CUMARTESİ", eyebrow:"Adım 2", title:"Geçiş günü",
-  leg:"BCN → FCO · <span class='hl'>UÇUŞ SAATİ BELİRLENMEDİ</span>",
-  memo:"Ucuz havayolu bagaj kuralları sıkı. Valizi hostelden çıkmadan önce tart — havalimanında sürpriz ceza yeme.",
+  leg:"BCN 16:20 → FCO 18:15 · RYANAIR FR6973",
+  memo:"10 kg alt bagaj hakkı eklendi. Hostel çıkışından sonra havalimanına rahatça geçebilirsin.",
   groups:[
     { h:"Barselona'dan çıkış", items:[
       {t:"Hostel çıkışı — 12:00'ye kadar"},
       {t:"Dolabı boşalt, asma kilidi al", hint:"En sık unutulan şey."},
       {t:"Tax Free formları ve fişler yanında", tag:"krit", hint:"Bunlar olmadan Roma'da iade alamazsın."},
       {t:"Bagaj ağırlığını kontrol et"},
-      {t:"Havalimanına git"}
+      {t:"Havalimanına git (T2)"}
     ]},
     { h:"Roma'ya varış", items:[
-      {t:"Fiumicino'dan Termini'ye"},
+      {t:"Fiumicino'dan Termini'ye geçiş"},
       {t:"The RomeHello check-in", hint:"Via Torino 45, Termini'ye çok yakın. Giriş 14:00–00:00."},
       {t:"Havlu / çarşaf durumunu hallet", hint:"Ek ücretli — ya öde ya kendi havlunu kullan."},
       {t:"Dolaba kilidi tak"}
@@ -543,7 +543,7 @@ const PLAN = [
   <input type="file" id="fileIn" accept="application/json" hidden>
 </div>
 
-<p class="foot" id="foot">SÜRÜM 3 · 17 AĞUSTOS 2026</p>
+<p class="foot" id="foot">SÜRÜM 4 · 17 AĞUSTOS 2026</p>
 
 <!-- POP-UP (MODAL) HTML -->
 <div class="modal-overlay" id="itemModal">
