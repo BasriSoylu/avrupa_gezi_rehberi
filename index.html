@@ -782,7 +782,7 @@ const PLAN = [
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js')
+      navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js?v=2')
         .catch(err => console.log('Service Worker hatası:', err));
     });
   }
