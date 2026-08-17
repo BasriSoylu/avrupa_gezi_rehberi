@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Barselona → Roma · Gezi Checklist</title>
 <meta name="theme-color" content="#0E1F33">
-<!-- YENİ EKLENEN MANIFEST SATIRI -->
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
@@ -206,38 +205,39 @@ body{
 
 .item{
   display:flex;
-  align-items:flex-start;
-  gap:11px;
-  padding:9px 15px;
+  align-items:center; /* Yazıları hizala */
+  gap:12px;
+  padding:14px 15px; /* Tıklama alanını büyüttük */
   cursor:pointer;
   border-top:1px solid #F0F3F6;
 }
 .item:first-of-type{border-top:none}
 .item:active{background:#F7F9FB}
+
+/* --- KUTULAR BÜYÜTÜLDÜ --- */
 .box{
-  flex:0 0 19px;height:19px;margin-top:1px;
-  border:1.5px solid var(--ink-soft);
+  flex:0 0 26px; height:26px; /* Büyüdü */
+  border:2px solid var(--ink-soft);
+  border-radius:5px;
   display:grid;place-items:center;
   transition:background .12s,border-color .12s;
 }
-.box svg{width:12px;height:12px;stroke:#fff;stroke-width:2.6;fill:none;
+.box svg{width:15px;height:15px;stroke:#fff;stroke-width:3;fill:none;
   stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .18s ease}
 .item.on .box{background:var(--done);border-color:var(--done)}
 .item.on .box svg{stroke-dashoffset:0}
-.txt{flex:1;min-width:0}
+.txt{flex:1;min-width:0; font-size:16px;}
 .item.on .txt{color:#8B98A5;text-decoration:line-through;text-decoration-color:#C3CCD5}
 .tag{
   display:inline-block;
   font-family:var(--mono);
   font-size:9px;letter-spacing:.12em;
-  padding:1px 5px;margin-right:6px;
-  vertical-align:1px;
+  padding:2px 5px;margin-right:6px;
+  vertical-align:2px;
   border:1px solid currentColor;
 }
 .tag.krit{color:var(--stamp)}
 .tag.taslak{color:var(--transit)}
-.hint{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px}
-.item.on .hint{color:#A8B3BE}
 .item:focus-visible{outline:2px solid var(--transit);outline-offset:-2px}
 
 /* ---------- Not kutusu ---------- */
@@ -250,6 +250,40 @@ body{
   color:var(--ink);
 }
 .memo b{font-family:var(--mono);font-size:10px;letter-spacing:.14em;display:block;color:var(--stamp);margin-bottom:2px}
+
+/* ---------- POP-UP (MODAL) TASARIMI ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(14, 31, 51, 0.6);
+  z-index: 100; display: none; align-items: flex-end; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.modal-overlay.show { display: flex; opacity: 1; }
+.modal-card {
+  background: #fff; width: 100%; max-width: 500px;
+  border-radius: 16px 16px 0 0; padding: 24px;
+  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+  box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+}
+.modal-overlay.show .modal-card { transform: translateY(0); }
+@media(min-width:640px) {
+  .modal-overlay { align-items: center; }
+  .modal-card { border-radius: 12px; transform: scale(0.95); }
+  .modal-overlay.show .modal-card { transform: scale(1); }
+}
+.modal-title { font-size: 19px; font-weight: 700; color: var(--ink); margin: 0 0 10px; line-height: 1.3; }
+.modal-hint { font-size: 15px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.5; }
+.modal-hint b { color: var(--ink); }
+.modal-btn {
+  display: block; width: 100%; padding: 16px;
+  font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.05em;
+  background: var(--done); border: none; border-radius: 8px; cursor: pointer;
+  margin-bottom: 10px;
+}
+.modal-btn.is-done { background: var(--ink-soft); }
+.modal-close {
+  display: block; width: 100%; padding: 12px; background: none; border: none;
+  font-size: 13px; font-weight: 600; color: var(--ink-soft); cursor: pointer;
+}
 
 /* ---------- Alt bar ---------- */
 .tools{
@@ -275,14 +309,6 @@ body{
 .foot{
   max-width:720px;margin:22px auto 0;padding:0 12px;
   font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#9AA7B4;
-}
-@media(min-width:640px){
-  body{font-size:15.5px}
-  .wrap{padding-top:24px}
-  .title{font-size:23px}
-}
-@media(prefers-reduced-motion:reduce){
-  *{transition:none!important;animation:none!important}
 }
 </style>
 </head>
@@ -510,7 +536,18 @@ const PLAN = [
   <input type="file" id="fileIn" accept="application/json" hidden>
 </div>
 
-<p class="foot" id="foot">SÜRÜM 1 · 17 AĞUSTOS 2026</p>
+<p class="foot" id="foot">SÜRÜM 2 · 17 AĞUSTOS 2026</p>
+
+<!-- POP-UP (MODAL) HTML -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal-card">
+    <div id="modalTagWrap" style="margin-bottom:8px; display:none;"></div>
+    <h3 class="modal-title" id="modalTitle">Başlık</h3>
+    <div class="modal-hint" id="modalHint" style="display:none;">Açıklama</div>
+    <button class="modal-btn" id="modalToggleBtn">TAMAMLA</button>
+    <button class="modal-close" id="modalCloseBtn">KAPAT</button>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -518,7 +555,7 @@ const PLAN = [
   let state = {};
   let storageOK = true;
 
-  /* --- Kalıcılık: localStorage, olmazsa bellek --- */
+  /* --- Kalıcılık --- */
   function load(){
     try{
       const raw = localStorage.getItem(KEY);
@@ -526,7 +563,7 @@ const PLAN = [
     }catch(e){
       storageOK = false; state = {};
       const w = document.getElementById("warn");
-      w.textContent = "KAYIT KAPALI — bu ortamda tarayıcı deposu engelli. İşaretlemeler sayfayı kapatınca silinir. Kendi sitende sorunsuz çalışır.";
+      w.textContent = "KAYIT KAPALI — Özel sekmede olabilirsiniz.";
       w.style.display = "block";
     }
   }
@@ -590,6 +627,65 @@ const PLAN = [
     refreshTabs();
   }
 
+  /* --- Pop-up Mantığı --- */
+  const modal = document.getElementById("itemModal");
+  const mTitle = document.getElementById("modalTitle");
+  const mHint = document.getElementById("modalHint");
+  const mTag = document.getElementById("modalTagWrap");
+  const mBtn = document.getElementById("modalToggleBtn");
+  let activeId = null;
+  let activeEl = null;
+
+  function openModal(id, itemData, el) {
+    activeId = id;
+    activeEl = el;
+    mTitle.textContent = itemData.t;
+    
+    if(itemData.tag) {
+      mTag.innerHTML = '<span class="tag '+itemData.tag+'">'+(itemData.tag==="krit"?"KRİTİK":"TASLAK")+'</span>';
+      mTag.style.display = "block";
+    } else {
+      mTag.style.display = "none";
+    }
+
+    if(itemData.hint) {
+      mHint.innerHTML = itemData.hint;
+      mHint.style.display = "block";
+    } else {
+      mHint.style.display = "none";
+    }
+
+    updateModalBtn();
+    modal.classList.add("show");
+  }
+
+  function updateModalBtn() {
+    if(state[activeId]) {
+      mBtn.textContent = "TAMAMLANDI (GERİ AL)";
+      mBtn.classList.add("is-done");
+    } else {
+      mBtn.textContent = "TAMAMLA";
+      mBtn.classList.remove("is-done");
+    }
+  }
+
+  function closeModal() {
+    modal.classList.remove("show");
+  }
+
+  mBtn.addEventListener("click", () => {
+    state[activeId] = !state[activeId];
+    if(!state[activeId]) delete state[activeId];
+    activeEl.classList.toggle("on", !!state[activeId]);
+    save();
+    refreshDay();
+    closeModal();
+  });
+
+  document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+  modal.addEventListener("click", e => { if(e.target === modal) closeModal(); });
+
+  /* --- Render --- */
   function show(di){
     current = di;
     const day = PLAN[di];
@@ -612,12 +708,12 @@ const PLAN = [
         const it = norm(raw);
         const id = idOf(di,gi,ii);
         const on = state[id] ? " on" : "";
-        html += '<div class="item'+on+'" role="checkbox" tabindex="0" aria-checked="'+(state[id]?"true":"false")+'" data-id="'+id+'">';
+        
+        html += '<div class="item'+on+'" role="button" tabindex="0" data-id="'+id+'" data-di="'+di+'" data-gi="'+gi+'" data-ii="'+ii+'">';
         html +=   '<span class="box"><svg viewBox="0 0 16 16"><polyline points="2.5,8.5 6.5,12.5 13.5,3.5"/></svg></span>';
         html +=   '<span class="txt">';
         if(it.tag) html += '<span class="tag '+it.tag+'">'+(it.tag==="krit"?"KRİTİK":"TASLAK")+'</span>';
         html +=     it.t;
-        if(it.hint) html += '<span class="hint">'+it.hint+'</span>';
         html +=   '</span></div>';
       });
       html += '</section>';
@@ -626,17 +722,10 @@ const PLAN = [
     document.getElementById("stage").innerHTML = html;
 
     document.querySelectorAll(".item").forEach(el=>{
-      const toggle = ()=>{
+      el.addEventListener("click", ()=>{
         const id = el.dataset.id;
-        state[id] = !state[id];
-        if(!state[id]) delete state[id];
-        el.classList.toggle("on", !!state[id]);
-        el.setAttribute("aria-checked", state[id]?"true":"false");
-        save(); refreshDay();
-      };
-      el.addEventListener("click", toggle);
-      el.addEventListener("keydown", e=>{
-        if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }
+        const it = norm(PLAN[el.dataset.di].groups[el.dataset.gi].items[el.dataset.ii]);
+        openModal(id, it, el);
       });
     });
 
@@ -687,12 +776,10 @@ const PLAN = [
 })();
 </script>
 
-<!-- YENİ EKLENEN SERVICE WORKER KAYIT SCRİPTİ -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js')
-        .then(reg => console.log('Service Worker aktif!'))
         .catch(err => console.log('Service Worker hatası:', err));
     });
   }
