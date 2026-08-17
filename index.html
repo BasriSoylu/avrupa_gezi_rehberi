@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barselona → Roma · Gezi Checklist</title>
+<meta name="theme-color" content="#0E1F33">
+<!-- YENİ EKLENEN MANIFEST SATIRI -->
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --ink:#0E1F33;
+  --ink-soft:#3E546B;
+  --paper:#E7EAEE;
+  --card:#FFFFFF;
+  --rule:#C9D2DB;
+  --stamp:#C8102E;
+  --transit:#2E5E8C;
+  --done:#1B7A5A;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.5;
+  padding:0 0 64px;
+  background-image:repeating-linear-gradient(0deg,transparent 0 39px,rgba(14,31,51,.035) 39px 40px);
+}
+
+/* ---------- Üst bilgi ---------- */
+.masthead{
+  background:var(--ink);
+  color:#fff;
+  padding:18px 16px 14px;
+  padding-top:calc(18px + env(safe-area-inset-top));
+}
+.route{
+  font-family:var(--mono);
+  font-size:22px;
+  letter-spacing:.14em;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.route .arw{color:#7FA6C9;font-weight:400}
+.subline{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.18em;
+  color:#9FB6CB;
+  margin-top:6px;
+  text-transform:uppercase;
+}
+.meter{margin-top:14px}
+.meter-bar{
+  height:5px;
+  background:rgba(255,255,255,.16);
+  border-radius:0;
+  overflow:hidden;
+}
+.meter-fill{
+  height:100%;
+  width:0;
+  background:#7FC9A8;
+  transition:width .35s ease;
+}
+.meter-txt{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.1em;
+  color:#9FB6CB;
+  margin-top:6px;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* ---------- Gün sekmeleri ---------- */
+.daystrip{
+  position:sticky;top:0;z-index:20;
+  background:var(--ink);
+  border-top:1px solid rgba(255,255,255,.12);
+  display:flex;
+  gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:0 4px;
+}
+.daystrip::-webkit-scrollbar{display:none}
+.daytab{
+  flex:0 0 auto;
+  background:none;border:none;
+  color:#8AA3BA;
+  font-family:var(--mono);
+  padding:10px 13px 9px;
+  cursor:pointer;
+  text-align:center;
+  border-bottom:3px solid transparent;
+  transition:color .15s;
+}
+.daytab b{display:block;font-size:15px;letter-spacing:.04em;font-weight:700}
+.daytab span{display:block;font-size:9px;letter-spacing:.14em;margin-top:1px}
+.daytab.on{color:#fff;border-bottom-color:var(--stamp)}
+.daytab.full{color:#7FC9A8}
+.daytab.full.on{color:#7FC9A8;border-bottom-color:#7FC9A8}
+.daytab:focus-visible{outline:2px solid #7FA6C9;outline-offset:-2px}
+
+/* ---------- Bilet kartı ---------- */
+.wrap{max-width:720px;margin:0 auto;padding:18px 12px 0}
+.ticket{
+  background:var(--card);
+  border:1px solid var(--rule);
+  position:relative;
+  box-shadow:0 1px 0 rgba(14,31,51,.06);
+}
+.ticket-head{
+  display:flex;
+  align-items:stretch;
+  border-bottom:1px dashed var(--rule);
+}
+.stub{
+  flex:0 0 62px;
+  background:var(--ink);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:14px 4px;
+  position:relative;
+}
+.stub .d{font-family:var(--mono);font-size:27px;font-weight:700;line-height:1}
+.stub .m{font-family:var(--mono);font-size:9px;letter-spacing:.16em;margin-top:3px;color:#9FB6CB}
+.head-body{flex:1;padding:14px 15px;min-width:0}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--transit);
+  text-transform:uppercase;
+}
+.title{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:-.01em;
+  margin:3px 0 0;
+  line-height:1.2;
+}
+.leg{
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:.06em;
+  color:var(--ink-soft);
+  margin-top:7px;
+}
+.leg .hl{color:var(--stamp);font-weight:700}
+.daymeter{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.1em;
+  color:var(--ink-soft);
+  margin-top:9px;
+  display:flex;align-items:center;gap:8px;
+}
+.daymeter .track{flex:1;height:3px;background:var(--rule)}
+.daymeter .fill{height:100%;width:0;background:var(--done);transition:width .3s ease}
+
+/* tamamlandı damgası */
+.stamp{
+  position:absolute;
+  top:12px;right:12px;
+  border:2.5px solid var(--done);
+  color:var(--done);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.16em;
+  font-weight:700;
+  padding:5px 9px;
+  transform:rotate(-11deg) scale(.7);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease,transform .25s cubic-bezier(.2,1.5,.4,1);
+  background:rgba(255,255,255,.9);
+}
+.ticket.done .stamp{opacity:1;transform:rotate(-11deg) scale(1)}
+
+/* ---------- Bölümler & maddeler ---------- */
+.group{border-top:1px solid var(--rule)}
+.group:first-of-type{border-top:none}
+.group-h{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:12px 15px 6px;
+  display:flex;align-items:center;gap:8px;
+}
+.group-h::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+.item{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  padding:9px 15px;
+  cursor:pointer;
+  border-top:1px solid #F0F3F6;
+}
+.item:first-of-type{border-top:none}
+.item:active{background:#F7F9FB}
+.box{
+  flex:0 0 19px;height:19px;margin-top:1px;
+  border:1.5px solid var(--ink-soft);
+  display:grid;place-items:center;
+  transition:background .12s,border-color .12s;
+}
+.box svg{width:12px;height:12px;stroke:#fff;stroke-width:2.6;fill:none;
+  stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .18s ease}
+.item.on .box{background:var(--done);border-color:var(--done)}
+.item.on .box svg{stroke-dashoffset:0}
+.txt{flex:1;min-width:0}
+.item.on .txt{color:#8B98A5;text-decoration:line-through;text-decoration-color:#C3CCD5}
+.tag{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:9px;letter-spacing:.12em;
+  padding:1px 5px;margin-right:6px;
+  vertical-align:1px;
+  border:1px solid currentColor;
+}
+.tag.krit{color:var(--stamp)}
+.tag.taslak{color:var(--transit)}
+.hint{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+.item.on .hint{color:#A8B3BE}
+.item:focus-visible{outline:2px solid var(--transit);outline-offset:-2px}
+
+/* ---------- Not kutusu ---------- */
+.memo{
+  margin:0 15px 13px;
+  border-left:3px solid var(--stamp);
+  background:#FBF3F4;
+  padding:9px 11px;
+  font-size:13px;
+  color:var(--ink);
+}
+.memo b{font-family:var(--mono);font-size:10px;letter-spacing:.14em;display:block;color:var(--stamp);margin-bottom:2px}
+
+/* ---------- Alt bar ---------- */
+.tools{
+  max-width:720px;margin:16px auto 0;padding:0 12px;
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.tools button{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.1em;
+  background:none;border:1px solid var(--rule);
+  color:var(--ink-soft);
+  padding:8px 11px;cursor:pointer;
+}
+.tools button:hover{border-color:var(--ink-soft);color:var(--ink)}
+.tools button:focus-visible{outline:2px solid var(--transit);outline-offset:1px}
+.tools .danger:hover{border-color:var(--stamp);color:var(--stamp)}
+.warn{
+  max-width:720px;margin:12px auto 0;padding:9px 12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  color:#8a6d00;background:#FFF6DC;border:1px solid #F0DFA8;
+  display:none;
+}
+.foot{
+  max-width:720px;margin:22px auto 0;padding:0 12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#9AA7B4;
+}
+@media(min-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding-top:24px}
+  .title{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<script>
+const PLAN = [
+{
+  d:"17", m:"AĞU", wd:"PZT–SAL", eyebrow:"Adım 0", title:"Hazırlık",
+  leg:"17–18 AĞUSTOS · KALKIŞA 2 GÜN",
+  memo:"Barselona–Roma bileti hâlâ alınmadı. Fiyat her gün artıyor ve bagaj hakkı seçimi alışveriş planına bağlı.",
+  groups:[
+    { h:"Acil — önce bunlar", items:[
+      {t:"Barselona → Roma uçak bileti al (22 Ağustos)", tag:"krit", hint:"Kabin + kayıtlı bagaj hakkı olan tarifeyi seç, en ucuzunu değil. Kapıda fazla bagaj cezası 50–70 €."},
+      {t:"La Roca Village Shopping Express bileti al", hint:"Online 25 € gidiş-dönüş, otobüste 27 €. Kapasite sınırlı, ağustos yoğun."}
+    ]},
+    { h:"Belgeler", items:[
+      {t:"Pasaport geçerliliği", hint:"Dönüşten sonra en az 3 ay geçerli, son 10 yılda düzenlenmiş olmalı."},
+      {t:"Vize tarihleri 19–25 Ağustos'u kapsıyor mu"},
+      {t:"Seyahat sağlık sigortası poliçesi — tarih kontrolü"},
+      {t:"Dönüş bileti çıktısı alındı", hint:"25 Ağustos, Roma FCO 14:50."},
+      {t:"İki hostel rezervasyon çıktısı alındı"},
+      {t:"Pasaport fotokopisi + telefonda fotoğrafı"}
+    ]},
+    { h:"Para", items:[
+      {t:"150–250 € bozduruldu", hint:"Küçük banknot iste: 5 / 10 / 20 €."},
+      {t:"Bankaya yurt dışı seyahat bildirimi yapıldı"},
+      {t:"Yedek kart ayrıldı — ana karttan farklı yerde taşınacak"}
+    ]},
+    { h:"Telefon", items:[
+      {t:"eSIM veya roaming paketi ayarlandı"},
+      {t:"Barselona ve Roma haritaları çevrimdışı indirildi"},
+      {t:"Boarding pass telefona indirildi + kağıt çıktı alındı"}
+    ]},
+    { h:"Valiz", items:[
+      {t:"Valiz yarı boş toplandı", tag:"krit", hint:"En az %40 boşluk bırak — dönüşte alışverişle ağırlaşacak."},
+      {t:"Katlanır ikinci çanta kondu (duffel / sırt çantası)"},
+      {t:"Asma kilit, ince havlu, kulak tıkacı kondu", hint:"RomeHello havlu/çarşafı ek ücretle veriyor."},
+      {t:"Uzun pantolon kondu", hint:"Vatikan ve kiliseler omuz–diz kapalı olmayanı içeri almıyor."},
+      {t:"Yağmurluk kondu", hint:"21 Ağustos Cuma Barselona'da %65 yağmur ihtimali."},
+      {t:"Valiz tartıldı — bagaj hakkının altında"}
+    ]}
+  ]
+},
+{
+  d:"19", m:"AĞU", wd:"ÇARŞAMBA", eyebrow:"Adım 1", title:"Çıkış günü",
+  leg:"IST 12:30 → BCN ~14:50 · HAVALİMANINDA <span class='hl'>09:30</span>",
+  groups:[
+    { h:"Evden çıkmadan", items:[
+      {t:"Belge çantası kontrol", hint:"Pasaport, boarding pass (telefon + kağıt), dönüş bileti, iki hostel çıktısı, sigorta, nakit, ana kart."},
+      {t:"Powerbank kabin bagajında", tag:"krit", hint:"Valize konursa uçağa almazlar."},
+      {t:"Sıvılar ayrıldı", hint:"100 ml üstü valize; 100 ml altı 1 litrelik şeffaf poşette kabine."},
+      {t:"Kesici aletler valize kondu", hint:"Jilet, tırnak makası, makas."},
+      {t:"Kabine 1 yedek tişört + iç çamaşırı kondu", hint:"Valiz kaybolursa ilk gecen kurtulur."},
+      {t:"Telefon %100 şarjlı, powerbank dolu"},
+      {t:"09:30'da havalimanında olacak şekilde çık"}
+    ]},
+    { h:"Havalimanı", items:[
+      {t:"Bagaj drop / check-in kontuarı"},
+      {t:"Bagaj etiketini sakla", tag:"krit", hint:"Sana verilen küçük kağıt parçası — valiz kaybolursa tek kanıtın o."},
+      {t:"Pasaport kontrolü — çıkış damgası", hint:"Nereye gittiğin sorulabilir: \"Barselona, turistik, 6 gün\" yeterli."},
+      {t:"Güvenlik", hint:"Kemer, saat, telefon, powerbank ve sıvı poşeti ayrı kaba."},
+      {t:"Gate'i ekrandan takip et", hint:"Gate son dakika değişebilir — tek seferlik bakıp oturma."},
+      {t:"11:15'te gate'te ol", hint:"Kapı kalkıştan ~20–30 dk önce kapanır."}
+    ]},
+    { h:"Barselona'ya varış", items:[
+      {t:"Schengen pasaport kontrolü", hint:"Dönüş bileti ve otel rezervasyonu sorulabilir — çıktılar elinde olsun."},
+      {t:"Bagajı banttan al"},
+      {t:"Havalimanından şehre", tag:"taslak", hint:"Ulaşım yöntemi henüz belirlenmedi."},
+      {t:"Hostel check-in", hint:"Yeah Barcelona Hostel, Carrer Girona 176, Eixample. Giriş 15:00–23:30."},
+      {t:"Dolaba asma kilidi tak"},
+      {t:"Markete uğra — su, kahvaltılık"}
+    ]}
+  ]
+},
+{
+  d:"20", m:"AĞU", wd:"PERŞEMBE", eyebrow:"Barselona · 1", title:"Outlet günü",
+  leg:"LA ROCA VILLAGE · 30–31 °C",
+  memo:"Aldığın hiçbir şeyin etiketini sökme, kullanma. KDV iadesini 25 Ağustos'ta Roma'da alacaksın — ürünler o güne kadar kullanılmamış kalmalı.",
+  groups:[
+    { h:"Sabah", items:[
+      {t:"Estació del Nord'a yürü", hint:"Hostelden ~15 dakika."},
+      {t:"09:00 Shopping Express otobüsü", hint:"Yol ~40 dakika. Bilete dahil VIP kart mağazalarda %10 ek indirim veriyor."}
+    ]},
+    { h:"Outlet'te — Tax Free", items:[
+      {t:"Her kasada pasaportu göster, Tax Free (DIVA) formu iste", tag:"krit", hint:"İspanya'da minimum harcama şartı yok, her tutarda talep edilebilir. KDV %21."},
+      {t:"Form + fişleri tek bir zarfta topla"},
+      {t:"Etiketleri sökme, ürünleri kullanma", tag:"krit"}
+    ]},
+    { h:"Dönüş ve akşam", items:[
+      {t:"15:00 veya 16:00 otobüsüyle dön", hint:"Dönüşler 10:00–21:15 arası saat başı, 13:00–15:00 arasında boşluk var."},
+      {t:"Passeig de Gràcia yürüyüşü", tag:"taslak", hint:"Hostelden ~10 dk. Casa Batlló ve La Pedrera bu cadde üzerinde."}
+    ]}
+  ]
+},
+{
+  d:"21", m:"AĞU", wd:"CUMA", eyebrow:"Barselona · 2", title:"Şehir günü",
+  leg:"%65 YAĞMUR İHTİMALİ · 27 °C",
+  memo:"Yağmurlu gün. Program iç mekân ağırlıklı kurulmuş — yağmurluğu yanına al.",
+  groups:[
+    { h:"Program — taslak", items:[
+      {t:"Sagrada Família", tag:"krit", hint:"Bilet mutlaka önceden alınmalı, kapıda bilet yok."},
+      {t:"Barri Gòtic (Gotik Mahalle) ve Katedral", tag:"taslak"},
+      {t:"La Boqueria pazarı", tag:"taslak"},
+      {t:"Picasso Müzesi", tag:"taslak", hint:"Yağmur yoğunlaşırsa iyi alternatif."},
+      {t:"Barceloneta plajı", tag:"taslak", hint:"Sadece hava açarsa."}
+    ]},
+    { h:"Günlük", items:[
+      {t:"Yağmurluk yanında"},
+      {t:"Su matarası dolu"},
+      {t:"Şehir içi alışveriş yapılacaksa Tax Free formu iste", hint:"Zara, Mango, Massimo Dutti — Portal de l'Àngel ve Passeig de Gràcia."}
+    ]}
+  ]
+},
+{
+  d:"22", m:"AĞU", wd:"CUMARTESİ", eyebrow:"Adım 2", title:"Geçiş günü",
+  leg:"BCN → FCO · <span class='hl'>UÇUŞ SAATİ BELİRLENMEDİ</span>",
+  memo:"Ucuz havayolu bagaj kuralları sıkı. Valizi hostelden çıkmadan önce tart — havalimanında sürpriz ceza yeme.",
+  groups:[
+    { h:"Barselona'dan çıkış", items:[
+      {t:"Hostel çıkışı — 12:00'ye kadar"},
+      {t:"Dolabı boşalt, asma kilidi al", hint:"En sık unutulan şey."},
+      {t:"Tax Free formları ve fişler yanında", tag:"krit", hint:"Bunlar olmadan Roma'da iade alamazsın."},
+      {t:"Bagaj ağırlığını kontrol et"},
+      {t:"Havalimanına git"}
+    ]},
+    { h:"Roma'ya varış", items:[
+      {t:"Fiumicino'dan Termini'ye"},
+      {t:"The RomeHello check-in", hint:"Via Torino 45, Termini'ye çok yakın. Giriş 14:00–00:00."},
+      {t:"Havlu / çarşaf durumunu hallet", hint:"Ek ücretli — ya öde ya kendi havlunu kullan."},
+      {t:"Dolaba kilidi tak"}
+    ]}
+  ]
+},
+{
+  d:"23", m:"AĞU", wd:"PAZAR", eyebrow:"Roma · 1", title:"Antik Roma",
+  leg:"31–34 °C · ÇOK SICAK",
+  groups:[
+    { h:"Program — taslak", items:[
+      {t:"Kolezyum + Roma Forumu", tag:"krit", hint:"Bilet önceden alınmalı, kombine bilet Palatine Tepesi'ni de kapsıyor."},
+      {t:"Palatine Tepesi", tag:"taslak"},
+      {t:"Venedik Meydanı / Vittoriano", tag:"taslak"},
+      {t:"Trevi Çeşmesi", tag:"taslak", hint:"Akşam serinliğinde daha keyifli, ama kalabalık."}
+    ]},
+    { h:"Sıcak günlük", items:[
+      {t:"Güneş kremi sürüldü"},
+      {t:"Su matarası dolu", hint:"Roma'da 'nasoni' denen ücretsiz çeşmeler her yerde."},
+      {t:"Şapka yanında"}
+    ]}
+  ]
+},
+{
+  d:"24", m:"AĞU", wd:"PAZARTESİ", eyebrow:"Roma · 2", title:"Vatikan",
+  leg:"34 °C · YILIN EN SICAK GÜNÜ",
+  memo:"Kıyafet kuralı: omuz ve diz kapalı olmayanı içeri almıyorlar. Şortla gidersen kapıdan çevirirler — uzun pantolonu giy.",
+  groups:[
+    { h:"Program — taslak", items:[
+      {t:"Vatikan Müzeleri + Sistine Şapeli", tag:"krit", hint:"Bilet önceden. Sabah erken saat seç, öğleden sonra hem kalabalık hem sıcak."},
+      {t:"Uzun pantolon giyildi", tag:"krit"},
+      {t:"St. Peter Bazilikası", tag:"taslak"},
+      {t:"Castel Sant'Angelo", tag:"taslak"},
+      {t:"Pantheon", tag:"taslak"},
+      {t:"Trastevere — akşam", tag:"taslak"}
+    ]},
+    { h:"Son hazırlık", items:[
+      {t:"Roma'da alışveriş yapıldıysa Tax Free formu alındı", hint:"Via del Corso ana alışveriş caddesi."},
+      {t:"Tüm Tax Free formları ve fişler tek zarfta toplandı", tag:"krit"},
+      {t:"Valizi akşamdan topla", hint:"Yarın sabah erken çıkacaksın."},
+      {t:"Bagaj ağırlığını kontrol et"}
+    ]}
+  ]
+},
+{
+  d:"25", m:"AĞU", wd:"SALI", eyebrow:"Adım 3", title:"Dönüş günü",
+  leg:"FCO 14:50 → İSTANBUL · <span class='hl'>09:00'DA YOLA ÇIK</span>",
+  memo:"Tax Free onayı check-in'den ÖNCE yapılır. Ürünleri valize verirsen gümrük göremez, iade iptal olur.",
+  groups:[
+    { h:"Sabah", items:[
+      {t:"Hostel çıkışı — 11:00'e kadar, ama erken çık"},
+      {t:"Dolabı boşalt, asma kilidi al"},
+      {t:"09:00 civarı Fiumicino'ya hareket", tag:"krit", hint:"Normal 2 saat yerine 3 saat erken git — gümrük kuyruğu için."}
+    ]},
+    { h:"Fiumicino — Tax Free", items:[
+      {t:"Check-in'den ÖNCE gümrük masasına git", tag:"krit"},
+      {t:"Yanında: pasaport, DIVA formları, fişler, ürünler", tag:"krit", hint:"İspanyol formunu kiosk okumayabilir — personelli masaya git."},
+      {t:"Ürünler kullanılmamış ve etiketli", tag:"krit"},
+      {t:"İade yöntemini seç", hint:"Nakit anında ama komisyonu yüksek; karta iade 2–8 hafta sürüyor."}
+    ]},
+    { h:"Uçuş", items:[
+      {t:"Bagaj ağırlığı kontrol"},
+      {t:"Check-in / bagaj drop"},
+      {t:"Pasaport kontrolü — Schengen çıkış damgası", tag:"krit", hint:"Damganın vurulduğundan emin ol, vize geçmişin için önemli."},
+      {t:"Güvenlik ve gate"}
+    ]}
+  ]
+}
+];
+</script>
+
+<header class="masthead">
+  <div class="route">IST <span class="arw">→</span> BCN <span class="arw">→</span> FCO <span class="arw">→</span> IST</div>
+  <div class="subline">19–25 Ağustos 2026 · Barselona &amp; Roma</div>
+  <div class="meter">
+    <div class="meter-bar"><div class="meter-fill" id="allFill"></div></div>
+    <div class="meter-txt"><span id="allTxt">0 / 0</span><span id="allPct">%0</span></div>
+  </div>
+</header>
+
+<nav class="daystrip" id="strip" aria-label="Günler"></nav>
+
+<main class="wrap"><div id="stage"></div></main>
+
+<div class="warn" id="warn"></div>
+
+<div class="tools">
+  <button id="btnExport">YEDEĞİ İNDİR</button>
+  <button id="btnImport">YEDEK YÜKLE</button>
+  <button id="btnReset" class="danger">SIFIRLA</button>
+  <input type="file" id="fileIn" accept="application/json" hidden>
+</div>
+
+<p class="foot" id="foot">SÜRÜM 1 · 17 AĞUSTOS 2026</p>
+
+<script>
+(function(){
+  const KEY = "gezi-2026-08";
+  let state = {};
+  let storageOK = true;
+
+  /* --- Kalıcılık: localStorage, olmazsa bellek --- */
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      state = raw ? JSON.parse(raw) : {};
+    }catch(e){
+      storageOK = false; state = {};
+      const w = document.getElementById("warn");
+      w.textContent = "KAYIT KAPALI — bu ortamda tarayıcı deposu engelli. İşaretlemeler sayfayı kapatınca silinir. Kendi sitende sorunsuz çalışır.";
+      w.style.display = "block";
+    }
+  }
+  function save(){
+    if(!storageOK) return;
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e){ storageOK = false; }
+  }
+
+  const idOf = (di,gi,ii) => di+"."+gi+"."+ii;
+  const norm  = it => typeof it === "string" ? {t:it} : it;
+
+  function counts(di){
+    const day = PLAN[di]; let total=0, done=0;
+    day.groups.forEach((g,gi)=>g.items.forEach((_,ii)=>{
+      total++; if(state[idOf(di,gi,ii)]) done++;
+    }));
+    return {total,done};
+  }
+  function totals(){
+    let total=0,done=0;
+    PLAN.forEach((_,di)=>{const c=counts(di); total+=c.total; done+=c.done;});
+    return {total,done};
+  }
+
+  /* --- Gün sekmeleri --- */
+  const strip = document.getElementById("strip");
+  PLAN.forEach((day,di)=>{
+    const b = document.createElement("button");
+    b.className = "daytab";
+    b.type = "button";
+    b.innerHTML = "<b>"+day.d+"</b><span>"+day.wd.slice(0,3)+"</span>";
+    b.setAttribute("aria-label", day.d+" "+day.m+" — "+day.title);
+    b.addEventListener("click", ()=>show(di));
+    strip.appendChild(b);
+  });
+
+  let current = 0;
+
+  function refreshTabs(){
+    [...strip.children].forEach((b,di)=>{
+      const c = counts(di);
+      b.classList.toggle("on", di===current);
+      b.classList.toggle("full", c.total>0 && c.done===c.total);
+    });
+    const t = totals();
+    const pct = t.total ? Math.round(t.done/t.total*100) : 0;
+    document.getElementById("allFill").style.width = pct+"%";
+    document.getElementById("allTxt").textContent = t.done+" / "+t.total+" madde";
+    document.getElementById("allPct").textContent = "%"+pct;
+  }
+
+  function refreshDay(){
+    const c = counts(current);
+    const pct = c.total ? Math.round(c.done/c.total*100) : 0;
+    const fill = document.querySelector(".daymeter .fill");
+    const lbl  = document.querySelector(".daymeter .lbl");
+    if(fill) fill.style.width = pct+"%";
+    if(lbl)  lbl.textContent = c.done+"/"+c.total;
+    document.querySelector(".ticket").classList.toggle("done", c.total>0 && c.done===c.total);
+    refreshTabs();
+  }
+
+  function show(di){
+    current = di;
+    const day = PLAN[di];
+    let html = '<article class="ticket">';
+    html += '<div class="stamp">TAMAMLANDI</div>';
+    html += '<div class="ticket-head">';
+    html +=   '<div class="stub"><span class="d">'+day.d+'</span><span class="m">'+day.m+'</span></div>';
+    html +=   '<div class="head-body">';
+    html +=     '<div class="eyebrow">'+day.wd+' · '+day.eyebrow+'</div>';
+    html +=     '<h1 class="title">'+day.title+'</h1>';
+    if(day.leg) html += '<div class="leg">'+day.leg+'</div>';
+    html +=     '<div class="daymeter"><span class="lbl">0/0</span><span class="track"><span class="fill"></span></span></div>';
+    html +=   '</div></div>';
+
+    if(day.memo) html += '<div class="memo"><b>DİKKAT</b>'+day.memo+'</div>';
+
+    day.groups.forEach((g,gi)=>{
+      html += '<section class="group"><h2 class="group-h">'+g.h+'</h2>';
+      g.items.forEach((raw,ii)=>{
+        const it = norm(raw);
+        const id = idOf(di,gi,ii);
+        const on = state[id] ? " on" : "";
+        html += '<div class="item'+on+'" role="checkbox" tabindex="0" aria-checked="'+(state[id]?"true":"false")+'" data-id="'+id+'">';
+        html +=   '<span class="box"><svg viewBox="0 0 16 16"><polyline points="2.5,8.5 6.5,12.5 13.5,3.5"/></svg></span>';
+        html +=   '<span class="txt">';
+        if(it.tag) html += '<span class="tag '+it.tag+'">'+(it.tag==="krit"?"KRİTİK":"TASLAK")+'</span>';
+        html +=     it.t;
+        if(it.hint) html += '<span class="hint">'+it.hint+'</span>';
+        html +=   '</span></div>';
+      });
+      html += '</section>';
+    });
+    html += '</article>';
+    document.getElementById("stage").innerHTML = html;
+
+    document.querySelectorAll(".item").forEach(el=>{
+      const toggle = ()=>{
+        const id = el.dataset.id;
+        state[id] = !state[id];
+        if(!state[id]) delete state[id];
+        el.classList.toggle("on", !!state[id]);
+        el.setAttribute("aria-checked", state[id]?"true":"false");
+        save(); refreshDay();
+      };
+      el.addEventListener("click", toggle);
+      el.addEventListener("keydown", e=>{
+        if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }
+      });
+    });
+
+    refreshDay();
+    const tab = strip.children[di];
+    if(tab) tab.scrollIntoView({block:"nearest", inline:"center", behavior:"smooth"});
+  }
+
+  /* --- Yedekleme --- */
+  document.getElementById("btnExport").addEventListener("click", ()=>{
+    const blob = new Blob([JSON.stringify({v:1, key:KEY, state}, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gezi-ilerleme.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById("btnImport").addEventListener("click", ()=>document.getElementById("fileIn").click());
+  document.getElementById("fileIn").addEventListener("change", e=>{
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const data = JSON.parse(r.result);
+        state = data.state || {};
+        save(); show(current);
+      }catch(err){
+        alert("Dosya okunamadı. Bu, bu sayfadan indirilmiş bir yedek dosyası olmalı.");
+      }
+    };
+    r.readAsText(f);
+    e.target.value = "";
+  });
+  document.getElementById("btnReset").addEventListener("click", ()=>{
+    if(!confirm("Tüm işaretlemeler silinecek. Devam?")) return;
+    state = {}; save(); show(current);
+  });
+
+  /* --- Başlangıç: bugüne en yakın günü aç --- */
+  load();
+  const today = new Date();
+  let start = 0;
+  if(today.getFullYear()===2026 && today.getMonth()===7){
+    const dd = today.getDate();
+    for(let i=0;i<PLAN.length;i++){ if(parseInt(PLAN[i].d,10) <= dd) start = i; }
+  }
+  show(start);
+})();
+</script>
+
+<!-- YENİ EKLENEN SERVICE WORKER KAYIT SCRİPTİ -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js')
+        .then(reg => console.log('Service Worker aktif!'))
+        .catch(err => console.log('Service Worker hatası:', err));
+    });
+  }
+</script>
+</body>
+</html>
