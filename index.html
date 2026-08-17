@@ -295,35 +295,40 @@ const PLAN = [
   leg:"17–18 AĞUSTOS · KALKIŞA 2 GÜN",
   memo:"Barselona–Roma bileti hâlâ alınmadı. Fiyat her gün artıyor ve bagaj hakkı seçimi alışveriş planına bağlı.",
   groups:[
-    { h:"Acil — önce bunlar", items:[
-      {t:"Barselona → Roma uçak bileti al (22 Ağustos)", tag:"krit", hint:"Kabin + kayıtlı bagaj hakkı olan tarifeyi seç, en ucuzunu değil. Kapıda fazla bagaj cezası 50–70 €."},
-      {t:"La Roca Village Shopping Express bileti al", hint:"Online 25 € gidiş-dönüş, otobüste 27 €. Kapasite sınırlı, ağustos yoğun."}
+    { h:"Acil İşler", items:[
+      {t:"Barselona → Roma uçak bileti al (22 Ağustos)", tag:"krit", hint:"Kabin + kayıtlı bagaj hakkı olan tarifeyi seç."},
+      {t:"La Roca Village Shopping Express bileti al", hint:"Online 25 € gidiş-dönüş."}
     ]},
-    { h:"Belgeler", items:[
-      {t:"Pasaport geçerliliği", hint:"Dönüşten sonra en az 3 ay geçerli, son 10 yılda düzenlenmiş olmalı."},
-      {t:"Vize tarihleri 19–25 Ağustos'u kapsıyor mu"},
-      {t:"Seyahat sağlık sigortası poliçesi — tarih kontrolü"},
+    { h:"Belgeler & Çıktılar", items:[
+      {t:"Pasaport kontrolü", hint:"Dönüşten sonra en az 3 ay geçerli olmalı."},
+      {t:"Vize tarihleri kontrolü (19–25 Ağustos)"},
+      {t:"Seyahat sağlık sigortası poliçesi"},
       {t:"Dönüş bileti çıktısı alındı", hint:"25 Ağustos, Roma FCO 14:50."},
       {t:"İki hostel rezervasyon çıktısı alındı"},
-      {t:"Pasaport fotokopisi + telefonda fotoğrafı"}
+      {t:"Pasaport fotokopisi (Cüzdana ve telefona)"}
     ]},
-    { h:"Para", items:[
-      {t:"150–250 € bozduruldu", hint:"Küçük banknot iste: 5 / 10 / 20 €."},
-      {t:"Bankaya yurt dışı seyahat bildirimi yapıldı"},
-      {t:"Yedek kart ayrıldı — ana karttan farklı yerde taşınacak"}
+    { h:"Finans & Para", items:[
+      {t:"150–250 € nakit bozduruldu", hint:"Küçük banknot iste: 5 / 10 / 20 €."},
+      {t:"Yedek kart ayrıldı", hint:"Ana karttan farklı yerde taşınacak."},
+      {t:"Bankaya yurt dışı harcama bildirimi yapıldı"}
     ]},
-    { h:"Telefon", items:[
+    { h:"Telefon & Dijital", items:[
       {t:"eSIM veya roaming paketi ayarlandı"},
       {t:"Barselona ve Roma haritaları çevrimdışı indirildi"},
       {t:"Boarding pass telefona indirildi + kağıt çıktı alındı"}
     ]},
-    { h:"Valiz", items:[
-      {t:"Valiz yarı boş toplandı", tag:"krit", hint:"En az %40 boşluk bırak — dönüşte alışverişle ağırlaşacak."},
+    { h:"Valiz: Kıyafet & Eşya", items:[
+      {t:"Valiz %40 boş toplandı", tag:"krit", hint:"Dönüşteki alışverişlerle ağırlaşacak, yer bırak."},
       {t:"Katlanır ikinci çanta kondu (duffel / sırt çantası)"},
-      {t:"Asma kilit, ince havlu, kulak tıkacı kondu", hint:"RomeHello havlu/çarşafı ek ücretle veriyor."},
-      {t:"Uzun pantolon kondu", hint:"Vatikan ve kiliseler omuz–diz kapalı olmayanı içeri almıyor."},
-      {t:"Yağmurluk kondu", hint:"21 Ağustos Cuma Barselona'da %65 yağmur ihtimali."},
-      {t:"Valiz tartıldı — bagaj hakkının altında"}
+      {t:"Asma kilit, ince havlu, kulak tıkacı kondu"},
+      {t:"Uzun pantolon kondu", hint:"Vatikan ve kiliseler omuz–diz kapalı olmayanı almaz."},
+      {t:"Yağmurluk kondu", hint:"21 Ağustos Cuma Barselona'da %65 yağmur ihtimali."}
+    ]},
+    { h:"Valiz: Sağlık & Elektronik", items:[
+      {t:"Temel ilaçlar kondu", hint:"Ağrı kesici, yara bandı, mide ilacı (Eczaneler erken kapanır)."},
+      {t:"Kişisel bakım çantası hazırlandı", hint:"Şampuan, diş fırçası, macun, tıraş makinesi."},
+      {t:"Çoklu şarj kablosu kondu", hint:"Hostellerde priz sayısı kısıtlı olabilir."},
+      {t:"Valiz tartıldı (Bagaj hakkının altında)"}
     ]}
   ]
 },
@@ -331,30 +336,31 @@ const PLAN = [
   d:"19", m:"AĞU", wd:"ÇARŞAMBA", eyebrow:"Adım 1", title:"Çıkış günü",
   leg:"IST 12:30 → BCN ~14:50 · HAVALİMANINDA <span class='hl'>09:30</span>",
   groups:[
-    { h:"Evden çıkmadan", items:[
-      {t:"Belge çantası kontrol", hint:"Pasaport, boarding pass (telefon + kağıt), dönüş bileti, iki hostel çıktısı, sigorta, nakit, ana kart."},
-      {t:"Powerbank kabin bagajında", tag:"krit", hint:"Valize konursa uçağa almazlar."},
+    { h:"Evden Çıkmadan", items:[
+      {t:"Belge çantası kontrol", hint:"Pasaport, boarding pass, dönüş bileti, sigorta, nakit, ana kart."},
+      {t:"Powerbank KABİN bagajında", tag:"krit", hint:"Uçak altı valize konursa uçağa almazlar."},
       {t:"Sıvılar ayrıldı", hint:"100 ml üstü valize; 100 ml altı 1 litrelik şeffaf poşette kabine."},
-      {t:"Kesici aletler valize kondu", hint:"Jilet, tırnak makası, makas."},
+      {t:"Kesici aletler uçak altı valize kondu", hint:"Jilet, tırnak makası, makas."},
       {t:"Kabine 1 yedek tişört + iç çamaşırı kondu", hint:"Valiz kaybolursa ilk gecen kurtulur."},
       {t:"Telefon %100 şarjlı, powerbank dolu"},
       {t:"09:30'da havalimanında olacak şekilde çık"}
     ]},
-    { h:"Havalimanı", items:[
-      {t:"Bagaj drop / check-in kontuarı"},
-      {t:"Bagaj etiketini sakla", tag:"krit", hint:"Sana verilen küçük kağıt parçası — valiz kaybolursa tek kanıtın o."},
+    { h:"İstanbul Havalimanı (IST)", items:[
+      {t:"Bagaj drop / check-in kontuarına git"},
+      {t:"Bagaj etiketini sakla", tag:"krit", hint:"Valiz kaybolursa tek kanıtın o küçük etiket."},
       {t:"Pasaport kontrolü — çıkış damgası", hint:"Nereye gittiğin sorulabilir: \"Barselona, turistik, 6 gün\" yeterli."},
-      {t:"Güvenlik", hint:"Kemer, saat, telefon, powerbank ve sıvı poşeti ayrı kaba."},
-      {t:"Gate'i ekrandan takip et", hint:"Gate son dakika değişebilir — tek seferlik bakıp oturma."},
-      {t:"11:15'te gate'te ol", hint:"Kapı kalkıştan ~20–30 dk önce kapanır."}
+      {t:"Güvenlik (Sıvı poşeti ve elektronikleri ayır)"},
+      {t:"11:15'te gate'te (kapıda) ol"}
     ]},
-    { h:"Barselona'ya varış", items:[
-      {t:"Schengen pasaport kontrolü", hint:"Dönüş bileti ve otel rezervasyonu sorulabilir — çıktılar elinde olsun."},
+    { h:"Barselona'ya Varış & Otele Geçiş", items:[
+      {t:"Schengen pasaport kontrolü", hint:"Dönüş bileti ve otel rezervasyon çıktısı elinde olsun."},
       {t:"Bagajı banttan al"},
-      {t:"Havalimanından şehre", tag:"taslak", hint:"Ulaşım yöntemi henüz belirlenmedi."},
-      {t:"Hostel check-in", hint:"Yeah Barcelona Hostel, Carrer Girona 176, Eixample. Giriş 15:00–23:30."},
+      {t:"Terminal 1'den Terminal 2'ye geç", hint:"Ücretsiz yeşil ring otobüsleri (Shuttle) ile 10 dakikada geçilir."},
+      {t:"Terminal 2 İstasyonundan T-Casual bileti al", hint:"Otomatlardan alınır (12.15€). 10 biniş içerir."},
+      {t:"R2N (Rodalies) Trenine bin", hint:"Passeig de Gràcia durağında ineceksin (~25 dk sürer)."},
+      {t:"Hostele yürü ve Check-in yap", hint:"Yeah Barcelona Hostel (Carrer Girona 176). Giriş 15:00'te başlar."},
       {t:"Dolaba asma kilidi tak"},
-      {t:"Markete uğra — su, kahvaltılık"}
+      {t:"Markete uğra — su, kahvaltılık al"}
     ]}
   ]
 },
