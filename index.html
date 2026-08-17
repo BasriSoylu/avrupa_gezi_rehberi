@@ -208,9 +208,9 @@ body{
 
 .item{
   display:flex;
-  align-items:center; /* Yazıları hizala */
+  align-items:center;
   gap:12px;
-  padding:14px 15px; /* Tıklama alanını büyüttük */
+  padding:14px 15px;
   cursor:pointer;
   border-top:1px solid #F0F3F6;
 }
@@ -219,7 +219,7 @@ body{
 
 /* --- KUTULAR BÜYÜTÜLDÜ --- */
 .box{
-  flex:0 0 26px; height:26px; /* Büyüdü */
+  flex:0 0 26px; height:26px;
   border:2px solid var(--ink-soft);
   border-radius:5px;
   display:grid;place-items:center;
@@ -303,6 +303,9 @@ body{
 .tools button:hover{border-color:var(--ink-soft);color:var(--ink)}
 .tools button:focus-visible{outline:2px solid var(--transit);outline-offset:1px}
 .tools .danger:hover{border-color:var(--stamp);color:var(--stamp)}
+.tools .refresh-btn{border-color:var(--done);color:var(--done)}
+.tools .refresh-btn:hover{background:var(--done);color:#fff}
+
 .warn{
   max-width:720px;margin:12px auto 0;padding:9px 12px;
   font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
@@ -535,11 +538,12 @@ const PLAN = [
 <div class="tools">
   <button id="btnExport">YEDEĞİ İNDİR</button>
   <button id="btnImport">YEDEK YÜKLE</button>
+  <button id="btnRefresh" class="refresh-btn">SİTEYİ GÜNCELLE</button>
   <button id="btnReset" class="danger">SIFIRLA</button>
   <input type="file" id="fileIn" accept="application/json" hidden>
 </div>
 
-<p class="foot" id="foot">SÜRÜM 2 · 17 AĞUSTOS 2026</p>
+<p class="foot" id="foot">SÜRÜM 3 · 17 AĞUSTOS 2026</p>
 
 <!-- POP-UP (MODAL) HTML -->
 <div class="modal-overlay" id="itemModal">
@@ -737,7 +741,7 @@ const PLAN = [
     if(tab) tab.scrollIntoView({block:"nearest", inline:"center", behavior:"smooth"});
   }
 
-  /* --- Yedekleme --- */
+  /* --- Yedekleme ve Güncelleme Butonu --- */
   document.getElementById("btnExport").addEventListener("click", ()=>{
     const blob = new Blob([JSON.stringify({v:1, key:KEY, state}, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
@@ -756,18 +760,30 @@ const PLAN = [
         state = data.state || {};
         save(); show(current);
       }catch(err){
-        alert("Dosya okunamadı. Bu, bu sayfadan indirilmiş bir yedek dosyası olmalı.");
+        alert("Dosya okunamadı.");
       }
     };
     r.readAsText(f);
     e.target.value = "";
   });
+  
+  document.getElementById("btnRefresh").addEventListener("click", ()=>{
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for(let reg of registrations) { reg.unregister(); }
+        window.location.reload(true);
+      });
+    } else {
+      window.location.reload(true);
+    }
+  });
+
   document.getElementById("btnReset").addEventListener("click", ()=>{
     if(!confirm("Tüm işaretlemeler silinecek. Devam?")) return;
     state = {}; save(); show(current);
   });
 
-  /* --- Başlangıç: bugüne en yakın günü aç --- */
+  /* --- Başlangıç --- */
   load();
   const today = new Date();
   let start = 0;
@@ -782,7 +798,7 @@ const PLAN = [
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js?v=2')
+      navigator.serviceWorker.register('/avrupa_gezi_rehberi/sw.js')
         .catch(err => console.log('Service Worker hatası:', err));
     });
   }
